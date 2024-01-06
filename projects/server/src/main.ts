@@ -1,17 +1,22 @@
 import fastify from "fastify";
 import cookie from "@fastify/cookie";
+import cors from "@fastify/cors";
 import {
   fastifyTRPCPlugin,
   type FastifyTRPCPluginOptions,
 } from "@trpc/server/adapters/fastify";
 import { appRouter, type AppRouter } from "./router.js";
-import { createContext } from "./trpc.js";
+import { createContext } from "./context.js";
 
 const server = fastify({
   maxParamLength: 5_000,
   bodyLimit: 1_000_000,
 });
 
+server.register(cors, {
+  origin: "http://localhost:5173",
+  credentials: true,
+});
 server.register(cookie);
 
 server.register(fastifyTRPCPlugin, {

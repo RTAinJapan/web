@@ -1,3 +1,7 @@
 {
-  "extends": "../../tsconfig.json"
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./node_modules/.dump",
+    "composite": true
+  }
 }
