@@ -1,27 +1,29 @@
 import { SESSION_COOKIE_DURATION } from "./constants.js";
 import { prisma } from "./prisma.js";
+import { adminRouter } from "./routes/admin.js";
 import { registrationRouter } from "./routes/registration.js";
 import { publicProcedure, router } from "./trpc.js";
 
 export const appRouter = router({
-  registration: registrationRouter,
+	admin: adminRouter,
+	registration: registrationRouter,
 
-  validateSession: publicProcedure.query(async ({ ctx }) => {
-    if (!ctx.sessionToken) {
-      return false;
-    }
+	validateSession: publicProcedure.query(async ({ ctx }) => {
+		if (!ctx.sessionToken) {
+			return false;
+		}
 
-    const session = await prisma.session.findUnique({
-      where: {
-        token: ctx.sessionToken,
-        createdAt: {
-          lt: new Date(Date.now() + SESSION_COOKIE_DURATION),
-        },
-      },
-    });
+		const session = await prisma.session.findUnique({
+			where: {
+				token: ctx.sessionToken,
+				createdAt: {
+					lt: new Date(Date.now() + SESSION_COOKIE_DURATION),
+				},
+			},
+		});
 
-    return session ? true : false;
-  }),
+		return session ? true : false;
+	}),
 });
 
 export type AppRouter = typeof appRouter;
