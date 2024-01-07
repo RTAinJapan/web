@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "rootDir": ".",
     "outDir": "./node_modules/.dump",
     "module": "ES2022",
     "moduleResolution": "Bundler",
