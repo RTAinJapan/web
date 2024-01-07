@@ -1,12 +1,14 @@
 import { SESSION_COOKIE_DURATION } from "./constants.js";
 import { prisma } from "./prisma.js";
 import { adminRouter } from "./routes/admin.js";
+import { authenticationRouter } from "./routes/authentication.js";
 import { registrationRouter } from "./routes/registration.js";
 import { publicProcedure, router } from "./trpc.js";
 
 export const appRouter = router({
 	admin: adminRouter,
 	registration: registrationRouter,
+	authentication: authenticationRouter,
 
 	validateSession: publicProcedure.query(async ({ ctx }) => {
 		if (!ctx.sessionToken) {

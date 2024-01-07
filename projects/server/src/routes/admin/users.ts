@@ -1,11 +1,11 @@
 import { z } from "zod";
 import { prisma } from "../../prisma.js";
-import { publicProcedure, router } from "../../trpc.js";
+import { adminProcedure, router } from "../../trpc.js";
 import { sortOrderSchema } from "../../utils/schemas.js";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library.js";
 
 export const usersRouter = router({
-	list: publicProcedure
+	list: adminProcedure
 		.input(
 			z.object({
 				take: z.number(),
@@ -26,7 +26,7 @@ export const usersRouter = router({
 			const count = await prisma.user.count();
 			return { data, count };
 		}),
-	get: publicProcedure
+	get: adminProcedure
 		.input(z.object({ id: z.string().uuid() }))
 		.query(async ({ input }) => {
 			const user = await prisma.user.findUnique({
@@ -39,7 +39,7 @@ export const usersRouter = router({
 			}
 			return user;
 		}),
-	update: publicProcedure
+	update: adminProcedure
 		.input(
 			z.object({
 				id: z.string().uuid(),
@@ -59,7 +59,7 @@ export const usersRouter = router({
 			});
 			return user;
 		}),
-	delete: publicProcedure
+	delete: adminProcedure
 		.input(z.object({ id: z.string().uuid() }))
 		.mutation(async ({ input }) => {
 			const result = await prisma.user.delete({
@@ -67,7 +67,7 @@ export const usersRouter = router({
 			});
 			return result;
 		}),
-	deleteMany: publicProcedure
+	deleteMany: adminProcedure
 		.input(z.object({ ids: z.array(z.string().uuid()) }))
 		.mutation(async ({ input }) => {
 			const deleted: string[] = [];

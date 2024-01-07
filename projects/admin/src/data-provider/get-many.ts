@@ -6,7 +6,7 @@ export const getMany = async (
 	{ ids }: GetManyParams,
 ): Promise<GetManyResult> => {
 	switch (resource) {
-		case "users":
+		case "users": {
 			const data = await Promise.all(
 				ids.map((id) => {
 					if (typeof id === "string") {
@@ -16,6 +16,7 @@ export const getMany = async (
 				}),
 			);
 			return { data };
+		}
 		default:
 			throw new Error(`unknown resource ${resource}`);
 	}

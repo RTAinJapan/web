@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/require-await */
 import type { CreateParams, CreateResult } from "react-admin";
 
 export const create = async (

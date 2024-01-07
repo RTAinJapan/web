@@ -4,13 +4,16 @@
   "scripts": {
     "dev": "run-p dev:*",
     "dev:vite": "vite",
-    "dev:types": "tsc -b --watch --preserveWatchOutput"
+    "dev:types": "tsc -b --watch --preserveWatchOutput",
+    "build": "tsc -b && vite build"
   },
   "dependencies": {
     "@trpc/client": "^10.45.0",
     "react": "^18.2.0",
     "react-admin": "^4.16.5",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.49.2",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/react": "^18.2.46",

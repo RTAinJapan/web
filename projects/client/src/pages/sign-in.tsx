@@ -1,7 +1,7 @@
-import { Button, TextField, Typography } from "@mui/material";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, TextField, Typography } from "@mui/material";
+import { useForm } from "react-hook-form";
 import { trpc } from "../trpc";
 import { useState } from "react";
 
@@ -10,11 +10,11 @@ const formSchema = z.object({
 });
 
 export const Component = () => {
+	const [emailSent, setEmailSent] = useState(false);
 	const { register, handleSubmit, formState } = useForm<{ email: string }>({
 		resolver: zodResolver(formSchema),
 	});
-	const [emailSent, setEmailSent] = useState(false);
-	const { mutate } = trpc.registration.initialize.useMutation({
+	const { mutate } = trpc.authentication.initialize.useMutation({
 		onSuccess: () => {
 			setEmailSent(true);
 		},
@@ -22,19 +22,22 @@ export const Component = () => {
 
 	return (
 		<>
-			<Typography variant="h1">新規登録</Typography>
+			<Typography variant="h1">ログイン</Typography>
 			{emailSent ? (
 				<Typography variant="body1">
-					メールを送信しました。メールに記載されているURLにアクセスし登録を完了してください。
+					メールを送信しました。メールに記載されているURLにアクセスしログインを完了してください。
 				</Typography>
 			) : (
 				<form
 					onSubmit={handleSubmit((data) => {
-						const url = new URL(
-							"/verify-registration-token",
+						const callbackUrl = new URL(
+							"/verify-authentication-token",
 							window.location.origin,
 						);
-						mutate({ email: data.email, callbackUrl: url.href });
+						mutate({
+							email: data.email,
+							callbackUrl: callbackUrl.href,
+						});
 					})}
 				>
 					<TextField
@@ -44,7 +47,7 @@ export const Component = () => {
 						error={formState.errors.email !== undefined}
 						helperText={formState.errors.email?.message}
 					/>
-					<Button type="submit">登録</Button>
+					<Button type="submit">ログイン</Button>
 				</form>
 			)}
 		</>

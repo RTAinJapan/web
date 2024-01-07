@@ -5,7 +5,7 @@ import { trpc } from "../trpc";
 export const Component = () => {
 	const trpcUtils = trpc.useUtils();
 	const navigate = useNavigate();
-	const { mutate } = trpc.registration.verifyToken.useMutation({
+	const { mutate } = trpc.authentication.verifyToken.useMutation({
 		onSuccess: async () => {
 			await trpcUtils.validateSession.invalidate();
 			// TODO: open last opened page

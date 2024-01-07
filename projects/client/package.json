@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "run-p dev:*",
     "dev:vite": "vite",
-    "dev:types": "tsc -b --watch --preserveWatchOutput"
+    "dev:types": "tsc -b --watch --preserveWatchOutput",
+    "build": "tsc -b && vite build"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",

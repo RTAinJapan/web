@@ -7,5 +7,34 @@
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:react-hooks/recommended",
     "prettier"
+  ],
+
+  "rules": {
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      { "checksVoidReturn": false }
+    ],
+    "@typescript-eslint/no-unused-vars": "off"
+  },
+
+  "overrides": [
+    {
+      "files": ["./projects/admin/**/*.ts", "./projects/admin/**/*.tsx"],
+      "parserOptions": {
+        "project": "./projects/admin/tsconfig.json"
+      }
+    },
+    {
+      "files": ["./projects/client/**/*.ts", "./projects/client/**/*.tsx"],
+      "parserOptions": {
+        "project": "./projects/client/tsconfig.json"
+      }
+    },
+    {
+      "files": ["./projects/server/**/*.ts"],
+      "parserOptions": {
+        "project": "./projects/server/tsconfig.json"
+      }
+    }
   ]
 }

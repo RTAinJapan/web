@@ -7,7 +7,7 @@ export const getList = async (
 	{ pagination, sort }: GetListParams,
 ): Promise<GetListResult> => {
 	switch (resource) {
-		case "users":
+		case "users": {
 			const res = await trpc.admin.users.list.query({
 				order: lowercase(sort.order),
 				orderBy: sort.field,
@@ -18,6 +18,7 @@ export const getList = async (
 				data: res.data,
 				total: res.count,
 			};
+		}
 		default:
 			throw new Error(`unknown resource ${resource}`);
 	}
