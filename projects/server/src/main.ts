@@ -7,6 +7,7 @@ import {
 } from "@trpc/server/adapters/fastify";
 import { appRouter, type AppRouter } from "./router.js";
 import { createContext } from "./context.js";
+import { prisma } from "./prisma.js";
 
 const server = fastify({
 	maxParamLength: 5_000,
@@ -28,6 +29,17 @@ await server.register(fastifyTRPCPlugin, {
 	},
 } satisfies FastifyTRPCPluginOptions<AppRouter>);
 
-await server.listen({ port: 3000 });
+// Healthcheck endpoint
+server.get("/", async (_, res) => {
+	try {
+		await prisma.$executeRaw`SELECT 1;`;
+		return { ok: true };
+	} catch (error) {
+		console.error(error);
+		return res.status(500).send();
+	}
+});
+
+await server.listen({ port: 3000, host: "0.0.0.0" });
 
 console.log("server listening on port 3000");
