@@ -2,7 +2,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "esbuild src/main.ts --bundle --outfile=out/main.js --platform=node --format=esm --target=node20 --packages=external --sourcemap",
+    "build": "prisma generate && esbuild src/main.ts --bundle --outfile=out/main.js --platform=node --format=esm --target=node20 --packages=external --sourcemap",
     "start": "node --enable-source-maps bin.js",
     "dev": "run-p dev:*",
     "dev:server": "node --watch --watch-preserve-output --enable-source-maps bin.js",

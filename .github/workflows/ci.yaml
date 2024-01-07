@@ -17,8 +17,6 @@ jobs:
         with:
           node-version-file: package.json
       - run: npm ci
-      - run: npx prisma generate
-        working-directory: ./projects/server
       - run: npm run check-format
       - run: npm run build
       - run: npm run lint
