@@ -9,7 +9,9 @@ on:
       - main
 
 permissions:
+  contents: read
   packages: write
+  id-token: write
 
 jobs:
   test:
@@ -26,15 +28,16 @@ jobs:
       - run: npm run test
 
       - if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
-        uses: actions/upload-artifact@v4
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          name: admin
-          path: ./projects/admin/dist
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ap-northeast-1
       - if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: client
-          path: ./projects/client/dist
+        run: |
+          zip -r /tmp/admin.zip ./projects/admin/dist
+          aws s3 cp /tmp/admin.zip s3://${{ secrets.AWS_S3_BUCKET }}/${{ github.sha }}/admin.zip
+          zip -r /tmp/client.zip ./projects/client/dist
+          aws s3 cp /tmp/client.zip s3://${{ secrets.AWS_S3_BUCKET }}/${{ github.sha }}/client.zip
 
   docker-image:
     if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
