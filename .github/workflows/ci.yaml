@@ -33,6 +33,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ap-northeast-1
       - if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+        name: Upload artifacts to S3
         run: |
           zip -r /tmp/admin.zip ./projects/admin/dist
           aws s3 cp /tmp/admin.zip s3://${{ secrets.AWS_S3_BUCKET }}/${{ github.sha }}/admin.zip
