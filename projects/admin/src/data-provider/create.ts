@@ -7,7 +7,7 @@ export const create = async (
 ): Promise<CreateResult> => {
 	switch (resource) {
 		case "users":
-			throw new Error("not implemented");
+			throw new Error("not allowed");
 		default:
 			throw new Error(`unknown resource ${resource}`);
 	}

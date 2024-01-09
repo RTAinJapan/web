@@ -11,10 +11,21 @@ export const deleteMany = async (
 	params: DeleteManyParams,
 ): Promise<DeleteManyResult> => {
 	const { ids } = paramsSchema.parse(params);
+
 	switch (resource) {
 		case "users": {
-			const result = await trpc.admin.users.deleteMany.mutate({ ids });
-			return { data: result };
+			const deleted: string[] = [];
+			await Promise.all(
+				ids.map(async (id) => {
+					try {
+						const res = await trpc.admin.users.delete.mutate({ id });
+						deleted.push(res.id);
+					} catch (error) {
+						console.error(error);
+					}
+				}),
+			);
+			return { data: deleted };
 		}
 		default:
 			throw new Error(`unknown resource ${resource}`);

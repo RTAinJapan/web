@@ -7,6 +7,8 @@ import {
 	Edit,
 	SimpleForm,
 	TextInput,
+	ArrayField,
+	SingleFieldList,
 } from "react-admin";
 
 export const UserList = () => (
@@ -14,8 +16,13 @@ export const UserList = () => (
 		<Datagrid rowClick="edit">
 			<TextField source="id" />
 			<EmailField source="email" />
-			<DateField source="createdAt" />
-			<DateField source="updatedAt" />
+			<TextField source="username" />
+			<ArrayField source="userRoles">
+				<SingleFieldList linkType={false}>
+					<TextField source="role" />
+				</SingleFieldList>
+			</ArrayField>
+			<DateField source="lastLogin" />
 		</Datagrid>
 	</List>
 );
@@ -24,6 +31,7 @@ export const UserEdit = () => (
 	<Edit>
 		<SimpleForm>
 			<TextInput source="email" />
+			<TextField source="username" />
 		</SimpleForm>
 	</Edit>
 );

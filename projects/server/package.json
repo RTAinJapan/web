@@ -8,6 +8,7 @@
     "dev:server": "node --watch --watch-preserve-output --enable-source-maps bin.js",
     "dev:build": "npm run build -- --watch",
     "dev:types": "tsc -b --watch --preserveWatchOutput",
+    "dev:prisma": "prisma generate --watch",
     "dev:db": "docker compose up",
     "test": "vitest run"
   },
