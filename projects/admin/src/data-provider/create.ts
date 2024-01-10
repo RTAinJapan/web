@@ -5,8 +5,9 @@ import { z } from "zod";
 
 const createEventSchema = z.object({
 	name: z.string(),
-	startsAt: z.string().datetime(),
-	endsAt: z.string().datetime(),
+	startsAt: z.date().transform((date) => date.toISOString()),
+	endsAt: z.date().transform((date) => date.toISOString()),
+	marathonTypes: z.array(z.enum(["ONLINE", "ONSITE"])),
 });
 
 export const create = async (

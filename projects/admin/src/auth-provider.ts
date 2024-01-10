@@ -57,6 +57,10 @@ export const authProvider: AuthProvider = {
 
 	logout: async () => {
 		try {
+			const signedIn = await trpc.validateSession.query();
+			if (!signedIn) {
+				return;
+			}
 			await trpc.authentication.signOut.mutate();
 		} catch (error) {
 			console.error(error);

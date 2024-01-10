@@ -4,6 +4,13 @@ import { adminProcedure, router } from "../../trpc.js";
 import { listSchema } from "./utils.js";
 import { MarathonType } from "@prisma/client";
 
+const createEventSchema = z.object({
+	name: z.string(),
+	startsAt: z.string().datetime(),
+	endsAt: z.string().datetime(),
+	marathonTypes: z.array(z.enum([MarathonType.ONLINE, MarathonType.ONSITE])),
+});
+
 export const eventsRouter = router({
 	list: adminProcedure.input(listSchema).query(async ({ input }) => {
 		const data = await prisma.event.findMany({
@@ -14,6 +21,9 @@ export const eventsRouter = router({
 				startsAt: input.orderBy === "startsAt" ? input.order : undefined,
 				endsAt: input.orderBy === "endsAt" ? input.order : undefined,
 				published: input.orderBy === "published" ? input.order : undefined,
+			},
+			include: {
+				eventMarathonTypes: true,
 			},
 		});
 		const count = await prisma.event.count();
@@ -26,6 +36,9 @@ export const eventsRouter = router({
 				where: {
 					id: input.id,
 				},
+				include: {
+					eventMarathonTypes: true,
+				},
 			});
 			if (!event) {
 				throw new Error("event not found");
@@ -33,19 +46,7 @@ export const eventsRouter = router({
 			return event;
 		}),
 	create: adminProcedure
-		.input(
-			z.object({
-				name: z.string(),
-				startsAt: z
-					.string()
-					.datetime()
-					.transform((date) => new Date(date)),
-				endsAt: z
-					.string()
-					.datetime()
-					.transform((date) => new Date(date)),
-			}),
-		)
+		.input(createEventSchema)
 		.mutation(async ({ input }) => {
 			const event = await prisma.event.create({
 				data: {
@@ -53,6 +54,12 @@ export const eventsRouter = router({
 					startsAt: input.startsAt,
 					endsAt: input.endsAt,
 				},
+			});
+			await prisma.eventMarathonType.createMany({
+				data: input.marathonTypes.map((type) => ({
+					eventId: event.id,
+					marathonType: type,
+				})),
 			});
 			return event;
 		}),
@@ -83,6 +90,7 @@ export const eventsRouter = router({
 					published: input.data.published,
 				},
 			});
+			// TODO: update event types
 			return event;
 		}),
 	delete: adminProcedure

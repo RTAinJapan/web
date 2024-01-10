@@ -1,8 +1,9 @@
-import { Admin, ListGuesser, Resource } from "react-admin";
+import { Admin, Resource } from "react-admin";
 import { dataProvider } from "./data-provider/data-provider";
-import { UserEdit, UserList } from "./users";
+import { UserEdit, UserList } from "./resources/users";
 import { LoginPage } from "./login";
 import { authProvider } from "./auth-provider";
+import { EventCreate, EventEdit, EventList } from "./resources/events";
 
 export const App = () => {
 	return (
@@ -17,7 +18,12 @@ export const App = () => {
 				edit={UserEdit}
 				recordRepresentation="email"
 			/>
-			<Resource name="events" list={ListGuesser} />
+			<Resource
+				name="events"
+				create={EventCreate}
+				list={EventList}
+				edit={EventEdit}
+			/>
 		</Admin>
 	);
 };

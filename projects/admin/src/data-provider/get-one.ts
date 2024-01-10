@@ -16,6 +16,17 @@ export const getOne = async (
 			const data = await trpc.admin.users.get.query({ id });
 			return { data };
 		}
+		case "events": {
+			const data = await trpc.admin.events.get.query({ id });
+			return {
+				data: {
+					...data,
+					marathonTypes: data.eventMarathonTypes.map(
+						(type) => type.marathonType,
+					),
+				},
+			};
+		}
 		default:
 			throw new Error(`unknown resource ${resource}`);
 	}
