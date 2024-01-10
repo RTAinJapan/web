@@ -32,6 +32,30 @@ export const eventsRouter = router({
 			}
 			return event;
 		}),
+	create: adminProcedure
+		.input(
+			z.object({
+				name: z.string(),
+				startsAt: z
+					.string()
+					.datetime()
+					.transform((date) => new Date(date)),
+				endsAt: z
+					.string()
+					.datetime()
+					.transform((date) => new Date(date)),
+			}),
+		)
+		.mutation(async ({ input }) => {
+			const event = await prisma.event.create({
+				data: {
+					name: input.name,
+					startsAt: input.startsAt,
+					endsAt: input.endsAt,
+				},
+			});
+			return event;
+		}),
 	update: adminProcedure
 		.input(
 			z.object({

@@ -1,4 +1,4 @@
-import { Admin, Resource } from "react-admin";
+import { Admin, ListGuesser, Resource } from "react-admin";
 import { dataProvider } from "./data-provider/data-provider";
 import { UserEdit, UserList } from "./users";
 import { LoginPage } from "./login";
@@ -17,6 +17,7 @@ export const App = () => {
 				edit={UserEdit}
 				recordRepresentation="email"
 			/>
+			<Resource name="events" list={ListGuesser} />
 		</Admin>
 	);
 };
