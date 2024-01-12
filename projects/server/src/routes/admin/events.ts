@@ -91,9 +91,9 @@ export const eventsRouter = router({
 					startsAt: input.data.startsAt,
 					endsAt: input.data.endsAt,
 					published: input.data.published,
+					type: input.data.type,
 				},
 			});
-			// TODO: update event types
 			return event;
 		}),
 	delete: adminProcedure
