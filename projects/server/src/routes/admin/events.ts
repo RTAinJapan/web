@@ -2,32 +2,43 @@ import { z } from "zod";
 import { prisma } from "../../prisma.js";
 import { adminProcedure, router } from "../../trpc.js";
 import { listSchema } from "./utils.js";
-import { MarathonType } from "@prisma/client";
+import { EventType } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 
 const createEventSchema = z.object({
 	name: z.string(),
 	startsAt: z.string().datetime(),
 	endsAt: z.string().datetime(),
-	marathonTypes: z.array(z.enum([MarathonType.ONLINE, MarathonType.ONSITE])),
+	published: z.boolean(),
+	type: z.enum([EventType.Onsite, EventType.Online]),
 });
 
 export const eventsRouter = router({
 	list: adminProcedure.input(listSchema).query(async ({ input }) => {
-		const data = await prisma.event.findMany({
-			skip: input.skip,
-			take: input.take,
-			orderBy: {
-				name: input.orderBy === "name" ? input.order : undefined,
-				startsAt: input.orderBy === "startsAt" ? input.order : undefined,
-				endsAt: input.orderBy === "endsAt" ? input.order : undefined,
-				published: input.orderBy === "published" ? input.order : undefined,
-			},
-			include: {
-				eventMarathonTypes: true,
-			},
-		});
-		const count = await prisma.event.count();
-		return { data, count };
+		const [events, count] = await Promise.all([
+			prisma.event.findMany({
+				skip: input.skip,
+				take: input.take,
+				orderBy: {
+					name: input.orderBy === "name" ? input.order : undefined,
+					startsAt: input.orderBy === "startsAt" ? input.order : undefined,
+					endsAt: input.orderBy === "endsAt" ? input.order : undefined,
+					published: input.orderBy === "published" ? input.order : undefined,
+				},
+			}),
+			prisma.event.count(),
+		]);
+		return {
+			data: events.map((event) => ({
+				id: event.id,
+				name: event.name,
+				startsAt: event.startsAt,
+				endsAt: event.endsAt,
+				published: event.published,
+				type: event.type,
+			})),
+			count,
+		};
 	}),
 	get: adminProcedure
 		.input(z.object({ id: z.string().uuid() }))
@@ -36,14 +47,18 @@ export const eventsRouter = router({
 				where: {
 					id: input.id,
 				},
-				include: {
-					eventMarathonTypes: true,
-				},
 			});
 			if (!event) {
-				throw new Error("event not found");
+				throw new TRPCError({ code: "NOT_FOUND" });
 			}
-			return event;
+			return {
+				id: event.id,
+				name: event.name,
+				startsAt: event.startsAt,
+				endsAt: event.endsAt,
+				published: event.published,
+				type: event.type,
+			};
 		}),
 	create: adminProcedure
 		.input(createEventSchema)
@@ -53,13 +68,9 @@ export const eventsRouter = router({
 					name: input.name,
 					startsAt: input.startsAt,
 					endsAt: input.endsAt,
+					published: input.published,
+					type: input.type,
 				},
-			});
-			await prisma.eventMarathonType.createMany({
-				data: input.marathonTypes.map((type) => ({
-					eventId: event.id,
-					marathonType: type,
-				})),
 			});
 			return event;
 		}),
@@ -67,15 +78,7 @@ export const eventsRouter = router({
 		.input(
 			z.object({
 				id: z.string().uuid(),
-				data: z.object({
-					name: z.string(),
-					startsAt: z.string(),
-					endsAt: z.string(),
-					published: z.boolean(),
-					eventMarathonTypes: z.array(
-						z.enum([MarathonType.ONLINE, MarathonType.ONSITE]),
-					),
-				}),
+				data: createEventSchema.partial(),
 			}),
 		)
 		.mutation(async ({ input }) => {

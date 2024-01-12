@@ -67,36 +67,23 @@ model UserRole {
   updateAt DateTime @updatedAt
 }
 
+enum EventType {
+  Onsite
+  Online
+}
+
 model Event {
-  id        String   @id @default(uuid()) @db.Uuid
-  name      String   @db.VarChar(255)
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String    @db.VarChar(255)
   startsAt  DateTime
   endsAt    DateTime
-  published Boolean  @default(false)
+  published Boolean
+  type      EventType
 
-  gameSubmissions    GameSubmission[]
-  eventMarathonTypes EventMarathonType[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum MarathonType {
-  ONLINE
-  ONSITE
-}
-
-model EventMarathonType {
-  id           String       @id @default(uuid()) @db.Uuid
-  eventId      String       @db.Uuid
-  marathonType MarathonType
-
-  event Event @relation(fields: [eventId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  gameSubmissions GameSubmission[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@unique([eventId, marathonType])
 }
 
 model GameSubmission {

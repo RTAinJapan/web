@@ -10,11 +10,9 @@ import {
 	List,
 	TextField,
 	CheckboxGroupInput,
-	ArrayField,
-	SingleFieldList,
-	ChipField,
 	Edit,
 	BooleanInput,
+	RadioButtonGroupInput,
 } from "react-admin";
 
 export const EventCreate = () => {
@@ -42,11 +40,7 @@ export const EventList = () => (
 			<TextField source="name" />
 			<DateField showTime source="startsAt" />
 			<DateField showTime source="endsAt" />
-			<ArrayField source="marathonTypes">
-				<SingleFieldList linkType={false}>
-					<ChipField source="name" />
-				</SingleFieldList>
-			</ArrayField>
+			<TextField source="type" />
 			<BooleanField source="published" />
 		</Datagrid>
 	</List>
@@ -58,11 +52,11 @@ export const EventEdit = () => (
 			<TextInput source="name" validate={[required()]} />
 			<DateTimeInput source="startsAt" validate={[required()]} />
 			<DateTimeInput source="endsAt" validate={[required()]} />
-			<CheckboxGroupInput
-				source="marathonTypes"
+			<RadioButtonGroupInput
+				source="type"
 				choices={[
-					{ id: "ONSITE", name: "Onsite" },
-					{ id: "ONLINE", name: "Online" },
+					{ id: "Onsite", name: "Onsite" },
+					{ id: "Online", name: "Online" },
 				]}
 			/>
 			<BooleanInput source="published" />

@@ -1,4 +1,4 @@
-import { MarathonType, PrismaClient, Role } from "@prisma/client";
+import { EventType, PrismaClient, Role } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -26,13 +26,7 @@ await prisma.event.create({
 		name: "RTA in Japan Sample 1995",
 		startsAt: new Date("1995-08-08T12:00:00+0900"),
 		endsAt: new Date("1995-08-15T18:00:00+0900"),
-		eventMarathonTypes: {
-			createMany: {
-				data: [
-					{ marathonType: MarathonType.ONLINE },
-					{ marathonType: MarathonType.ONSITE },
-				],
-			},
-		},
+		published: false,
+		type: EventType.Onsite,
 	},
 });

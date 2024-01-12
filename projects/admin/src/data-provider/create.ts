@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
 import type { CreateParams, CreateResult } from "react-admin";
 import { trpc } from "../trpc";
 import { z } from "zod";
@@ -7,7 +6,8 @@ const createEventSchema = z.object({
 	name: z.string(),
 	startsAt: z.date().transform((date) => date.toISOString()),
 	endsAt: z.date().transform((date) => date.toISOString()),
-	marathonTypes: z.array(z.enum(["ONLINE", "ONSITE"])),
+	published: z.boolean(),
+	type: z.enum(["Onsite", "Online"]),
 });
 
 export const create = async (

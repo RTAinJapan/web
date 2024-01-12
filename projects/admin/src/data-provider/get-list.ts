@@ -15,17 +15,15 @@ export const getList = async (
 	switch (resource) {
 		case "users": {
 			const res = await trpc.admin.users.list.query(input);
-			return { data: res.data, total: res.count };
+			return {
+				data: res.data,
+				total: res.count,
+			};
 		}
 		case "events": {
 			const res = await trpc.admin.events.list.query(input);
 			return {
-				data: res.data.map((item) => ({
-					...item,
-					marathonTypes: item.eventMarathonTypes.map((type) => ({
-						name: type.marathonType,
-					})),
-				})),
+				data: res.data,
 				total: res.count,
 			};
 		}

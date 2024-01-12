@@ -13,18 +13,15 @@ export const getOne = async (
 	const { id } = paramsSchema.parse(params);
 	switch (resource) {
 		case "users": {
-			const data = await trpc.admin.users.get.query({ id });
-			return { data };
+			const res = await trpc.admin.users.get.query({ id });
+			return {
+				data: res,
+			};
 		}
 		case "events": {
-			const data = await trpc.admin.events.get.query({ id });
+			const res = await trpc.admin.events.get.query({ id });
 			return {
-				data: {
-					...data,
-					marathonTypes: data.eventMarathonTypes.map(
-						(type) => type.marathonType,
-					),
-				},
+				data: res,
 			};
 		}
 		default:
